@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma Rufino - Criadora</title>
+    <!-- Inclui a fonte Poppins do Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Inclui o CDN do Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style type="text/tailwindcss">
+        /* Configuração do Tailwind CSS para cores e fontes personalizadas */
+        @layer base {
+            html {
+                font-family: 'Poppins', sans-serif;
+            }
+        }
+        @tailwind base;
+        @tailwind components;
+        @tailwind utilities;
+
+        /* Definição das animações de fade-in */
+        .animate-fade-in {
+            animation: fadeIn 1s ease-out forwards;
+            opacity: 0;
+        }
+
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-600 { animation-delay: 0.6s; }
+        .delay-800 { animation-delay: 0.8s; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+    <script>
+        // Configuração do Tailwind CSS para estender o tema com suas cores e fontes
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        nude: '#FBF9F1',
+                        'dourado-claro': '#E1D8BE',
+                        'coral-suave': '#FF8C6B',
+                        'dark-text': '#333333',
+                        'light-text': '#555555',
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'Nunito', 'sans-serif'], // Ordem de preferência de fontes
+                    },
+                },
+            },
+        };
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <!-- Importa React e ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Importa Babel para transpilar JSX no navegador (apenas para desenvolvimento/prototipagem) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+        // Definição das cores da paleta para uso direto nos componentes
+        const colors = {
+            nude: '#FBF9F1',
+            white: '#FFFFFF',
+            'dourado-claro': '#E1D8BE',
+            'coral-suave': '#FF8C6B',
+            'dark-text': '#333333',
+            'light-text': '#555555',
+        };
+
+        // Componente para um botão primário com estilo Rufino
+        const PrimaryButton = ({ children, onClick, className = '', type = 'button' }) => (
+            <button
+                type={type}
+                onClick={onClick}
+                className={`bg-coral-suave text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300 ease-in-out ${className}`}
+            >
+                {children}
+            </button>
+        );
+
+        // Componente para um input com estilo Rufino
+        const InputField = ({ label, type = 'text', name, value, onChange, placeholder = '', rows = 1 }) => (
+            <div className="mb-4">
+                <label htmlFor={name} className="block text-light-text text-sm font-semibold mb-2">
+                    {label}
+                </label>
+                {type === 'textarea' ? (
+                    <textarea
+                        id={name}
+                        name={name}
+                        value={value}
+                        onChange={onChange}
+                        placeholder={placeholder}
+                        rows={rows}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-coral-suave focus:border-transparent text-dark-text bg-white shadow-sm"
+                    ></textarea>
+                ) : (
+                    <input
+                        type={type}
+                        id={name}
+                        name={name}
+                        value={value}
+                        onChange={onChange}
+                        placeholder={placeholder}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-coral-suave focus:border-transparent text-dark-text bg-white shadow-sm"
+                    />
+                )}
+            </div>
+        );
+
+        // Componente Landing Page
+        const LandingPage = ({ onStartClick }) => (
+            <div className="min-h-screen bg-nude flex flex-col items-center justify-center text-center p-6 md:p-10 font-sans">
+                <h1 className="text-5xl md:text-6xl font-bold text-dark-text leading-tight mb-4 animate-fade-in">
+                    Crie sua loja de produtos digitais com a Rufino ✨
+                </h1>
+                <p className="text-xl md:text-2xl text-light-text mb-8 max-w-2xl animate-fade-in delay-200">
+                    Checkout global, visual encantador e liberdade total.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 max-w-4xl w-full animate-fade-in delay-400">
+                    <div className="p-6 bg-white rounded-xl shadow-lg flex flex-col items-center">
+                        <span className="text-coral-suave text-4xl mb-3">💳</span>
+                        <h3 className="font-semibold text-lg text-dark-text mb-2">Gateways Internacionais</h3>
+                        <p className="text-light-text text-sm">Checkout com Stripe, Mercado Pago, PayPal e Mollie.</p>
+                    </div>
+                    <div className="p-6 bg-white rounded-xl shadow-lg flex flex-col items-center">
+                        <span className="text-coral-suave text-4xl mb-3">🎨</span>
+                        <h3 className="font-semibold text-lg text-dark-text mb-2">Editor Visual</h3>
+                        <p className="text-light-text text-sm">Editor visual simples e poderoso para sua página de vendas.</p>
+                    </div>
+                    <div className="p-6 bg-white rounded-xl shadow-lg flex flex-col items-center">
+                        <span className="text-coral-suave text-4xl mb-3">💸</span>
+                        <h3 className="font-semibold text-lg text-dark-text mb-2">Comissões Baixas</h3>
+                        <p className="text-light-text text-sm">Transparência total nas taxas, sem surpresas.</p>
+                    </div>
+                </div>
+
+                <div className="mb-12 w-full max-w-2xl animate-fade-in delay-600">
+                    {/* Imagem/vídeo ilustrando: Criadora → Produto → Checkout → Pagamento */}
+                    <img
+                        src="https://placehold.co/800x450/E1D8BE/333333?text=Criadora+%E2%86%92+Produto+%E2%86%92+Venda"
+                        alt="Fluxo da criadora na Rufino"
+                        className="rounded-xl shadow-xl w-full h-auto object-cover"
+                    />
+                </div>
+
+                <PrimaryButton onClick={onStartClick} className="animate-fade-in delay-800">
+                    Comece agora — é grátis
+                </PrimaryButton>
+            </div>
+        );
+
+        // Componente Tela de Cadastro da Criadora
+        const RegistrationPage = ({ onRegisterSuccess }) => {
+            const [formData, setFormData] = React.useState({
+                fullName: '',
+                storeName: '',
+                email: '',
+                password: '',
+                country: '',
+            });
+
+            const handleChange = (e) => {
+                const { name, value } = e.target;
+                setFormData((prev) => ({ ...prev, [name]: value }));
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                // Simulação de cadastro bem-sucedido
+                console.log('Dados de cadastro:', formData);
+                onRegisterSuccess(formData.fullName || 'Camila'); // Passa o nome para o dashboard
+            };
+
+            return (
+                <div className="min-h-screen bg-nude flex flex-col items-center justify-center p-6 md:p-10 font-sans">
+                    <div className="bg-white p-8 md:p-10 rounded-xl shadow-lg w-full max-w-md">
+                        <h2 className="text-3xl font-bold text-dark-text mb-6 text-center">Crie sua conta Rufino</h2>
+                        <form onSubmit={handleSubmit}>
+                            <InputField label="Nome Completo" name="fullName" value={formData.fullName} onChange={handleChange} placeholder="Seu nome completo" />
+                            <InputField label="Nome da Loja (rufino.com/)" name="storeName" value={formData.storeName} onChange={handleChange} placeholder="seu-nome-de-loja" />
+                            <InputField label="E-mail" type="email" name="email" value={formData.email} onChange={handleChange} placeholder="seu@email.com" />
+                            <InputField label="Senha" type="password" name="password" value={formData.password} onChange={handleChange} placeholder="********" />
+                            <InputField label="País" name="country" value={formData.country} onChange={handleChange} placeholder="Brasil" />
+                            <PrimaryButton type="submit" className="w-full mt-6">
+                                Cadastrar
+                            </PrimaryButton>
+                        </form>
+                    </div>
+                </div>
+            );
+        };
+
+        // Componente Dashboard da Criadora
+        const DashboardPage = ({ creatorName, onAddProduct, onViewSalesPage, onConfigureGateway }) => {
+            const [activeTab, setActiveTab] = React.useState('Produtos');
+
+            const products = [
+                { id: 1, name: 'Ebook: Despertar Feminino', status: 'Ativo', type: 'Ebook' },
+                { id: 2, name: 'Curso: Marketing para Criadoras', status: 'Rascunho', type: 'Curso' },
+                { id: 3, name: 'Mentoria Individual de Carreira', status: 'Ativo', type: 'Mentoria' },
+            ];
+
+            const renderContent = () => {
+                switch (activeTab) {
+                    case 'Produtos':
+                        return (
+                            <div>
+                                <h3 className="text-2xl font-semibold text-dark-text mb-4">Meus Produtos</h3>
+                                <PrimaryButton onClick={onAddProduct} className="mb-6">
+                                    Adicionar Novo Produto
+                                </PrimaryButton>
+                                <div className="bg-white p-6 rounded-xl shadow-md">
+                                    <h4 className="font-semibold text-lg text-dark-text mb-4">Produtos Recentes</h4>
+                                    <ul>
+                                        {products.map((product) => (
+                                            <li key={product.id} className="flex justify-between items-center py-3 border-b border-gray-200 last:border-b-0">
+                                                <div>
+                                                    <p className="font-medium text-dark-text">{product.name} ({product.type})</p>
+                                                    <span className={`text-sm ${product.status === 'Ativo' ? 'text-green-600' : 'text-yellow-600'}`}>
+                                                        Status: {product.status}
+                                                    </span>
+                                                </div>
+                                                <button className="text-coral-suave hover:underline text-sm">Ver/Editar</button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        );
+                    case 'Página de Vendas':
+                        return (
+                            <div>
+                                <h3 className="text-2xl font-semibold text-dark-text mb-4">Sua Página de Vendas</h3>
+                                <p className="text-light-text mb-6">A Rufino oferece um editor visual intuitivo para criar sua página de vendas. Sua URL pública é <a href="#" onClick={onViewSalesPage} className="text-coral-suave hover:underline">rufino.com/{creatorName.toLowerCase()}</a>.</p>
+                                <PrimaryButton onClick={onViewSalesPage}>
+                                    Editar Página de Vendas
+                                </PrimaryButton>
+                            </div>
+                        );
+                    case 'Relatórios':
+                        return (
+                            <div>
+                                <h3 className="text-2xl font-semibold text-dark-text mb-4">Relatórios de Vendas</h3>
+                                <div className="bg-white p-6 rounded-xl shadow-md mb-6">
+                                    <h4 className="font-semibold text-lg text-dark-text mb-4">Gráfico de Vendas (Simulado)</h4>
+                                    {/* Gráfico Simulado */}
+                                    <div className="bg-gray-100 h-48 rounded-lg flex items-end justify-around p-4">
+                                        {[10, 25, 40, 30, 50, 45, 60].map((height, index) => (
+                                            <div
+                                                key={index}
+                                                className="w-8 bg-coral-suave rounded-t-full relative"
+                                                style={{ height: `${height}%` }}
+                                            >
+                                                <span className="absolute -top-6 text-xs text-light-text left-1/2 -translate-x-1/2">
+                                                    ${height * 10}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <p className="text-center text-sm text-light-text mt-4">Vendas da última semana</p>
+                                </div>
+                                <p className="text-light-text">Aqui você verá seus relatórios de vendas detalhados.</p>
+                            </div>
+                        );
+                    case 'Configurar Pagamento':
+                        return (
+                            <div>
+                                <h3 className="text-2xl font-semibold text-dark-text mb-4">Configurar Gateway de Pagamento</h3>
+                                <p className="text-light-text mb-6">Configure suas opções de recebimento de pagamentos.</p>
+                                <PrimaryButton onClick={onConfigureGateway}>
+                                    Configurar Gateways
+                                </PrimaryButton>
+                            </div>
+                        );
+                    case 'Suporte':
+                        return (
+                            <div>
+                                <h3 className="text-2xl font-semibold text-dark-text mb-4">Suporte</h3>
+                                <p className="text-light-text mb-4">Precisa de ajuda? Entre em contato conosco:</p>
+                                <p className="text-light-text">E-mail: <a href="mailto:suporte@rufino.com" className="text-coral-suave hover:underline">suporte@rufino.com</a></p>
+                                <p className="text-light-text mt-2">Horário de Atendimento: Segunda a Sexta, 9h-18h (GMT-3)</p>
+                            </div>
+                        );
+                    default:
+                        return null;
+                }
+            };
+
+            return (
+                <div className="min-h-screen bg-nude font-sans flex flex-col md:flex-row">
+                    {/* Sidebar / Menu */}
+                    <nav className="w-full md:w-64 bg-white shadow-lg p-6 flex flex-col items-start pt-8 md:min-h-screen">
+                        <h2 className="text-3xl font-bold text-dark-text mb-8">Rufino</h2>
+                        <p className="text-light-text text-lg mb-8">Bem-vinda, <span className="font-semibold text-dark-text">{creatorName}</span> ✨</p>
+                        <ul className="w-full">
+                            {['Produtos', 'Página de Vendas', 'Relatórios', 'Configurar Pagamento', 'Suporte'].map((item) => (
+                                <li key={item} className="mb-3">
+                                    <button
+                                        onClick={() => setActiveTab(item)}
+                                        className={`w-full text-left py-3 px-4 rounded-lg transition duration-200 ${
+                                            activeTab === item
+                                                ? 'bg-coral-suave text-white shadow-md'
+                                                : 'text-dark-text hover:bg-gray-100'
+                                        }`}
+                                    >
+                                        {item}
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+
+                    {/* Main Content */}
+                    <main className="flex-1 p-6 md:p-10">
+                        {renderContent()}
+                    </main>
+                </div>
+            );
+        };
+
+        // Componente Tela: Adicionar Produto
+        const AddProductPage = ({ onProductSave }) => {
+            const [productData, setProductData] = React.useState({
+                name: '',
+                type: 'Ebook',
+                cover: null, // Simulated file object
+                descriptionBrief: '',
+                descriptionDetailed: '',
+                price: '',
+                currency: 'USD',
+                contentLink: '',
+                gateway: 'Stripe',
+            });
+            const [aiGeneratedText, setAiGeneratedText] = React.useState('');
+
+            const handleChange = (e) => {
+                const { name, value, type, files } = e.target;
+                if (type === 'file') {
+                    setProductData((prev) => ({ ...prev, [name]: files[0] }));
+                } else {
+                    setProductData((prev) => ({ ...prev, [name]: value }));
+                }
+            };
+
+            const handleGenerateAIContent = () => {
+                // Simulação de geração de conteúdo por IA
+                const generatedText = `
+                    🌟 Desbloqueie seu potencial com este ${productData.type || 'produto'} exclusivo! 🌟
+
+                    Prepare-se para uma transformação profunda com o "${productData.name || 'Nome do Produto'}". Este ${productData.type || 'produto digital'} foi cuidadosamente elaborado para ${productData.type === 'Ebook' ? 'guiar você passo a passo através de conhecimentos essenciais' : productData.type === 'Curso' ? 'oferecer uma jornada de aprendizado imersiva com aulas práticas e teóricas' : productData.type === 'Mentoria' ? 'proporcionar orientação personalizada e insights estratégicos para seus desafios' : 'desafiar e impulsionar seu crescimento em [Área do Desafio]'}.
+
+                    No interior, você encontrará:
+                    - Conteúdo exclusivo e de alta qualidade.
+                    - Ferramentas práticas para aplicação imediata.
+                    - Inspiração para alcançar seus objetivos.
+
+                    Ideal para ${productData.type === 'Ebook' ? 'quem busca conhecimento aprofundado de forma flexível' : productData.type === 'Curso' ? 'aqueles que querem dominar novas habilidades com suporte estruturado' : productData.type === 'Mentoria' ? 'empreendedoras e profissionais que desejam acelerar resultados com mentoria de alto nível' : 'quem ama desafios e quer superar limites'}. Invista em você e veja a magia acontecer!
+                `;
+                setProductData((prev) => ({ ...prev, descriptionDetailed: generatedText }));
+                setAiGeneratedText('Conteúdo gerado com sucesso!');
+                setTimeout(() => setAiGeneratedText(''), 3000); // Limpa a mensagem após 3 segundos
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                console.log('Dados do produto:', productData);
+                onProductSave(); // Navega de volta ao dashboard
+            };
+
+            return (
+                <div className="min-h-screen bg-nude p-6 md:p-10 font-sans">
+                    <div className="bg-white p-8 md:p-10 rounded-xl shadow-lg w-full max-w-2xl mx-auto">
+                        <h2 className="text-3xl font-bold text-dark-text mb-6 text-center">Adicionar Novo Produto</h2>
+                        <form onSubmit={handleSubmit}>
+                            <InputField label="Nome do Produto" name="name" value={productData.name} onChange={handleChange} placeholder="Ex: Ebook Despertar Feminino" />
+                            <div className="mb-4">
+                                <label htmlFor="type" className="block text-light-text text-sm font-semibold mb-2">
+                                    Tipo de Produto
+                                </label>
+                                <select
+                                    id="type"
+                                    name="type"
+                                    value={productData.type}
+                                    onChange={handleChange}
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-coral-suave focus:border-transparent text-dark-text bg-white shadow-sm"
+                                >
+                                    <option value="Curso">Curso</option>
+                                    <option value="Ebook">Ebook</option>
+                                    <option value="Mentoria">Mentoria</option>
+                                    <option value="Desafio">Desafio</option>
+                                </select>
+                            </div>
+                            <div className="mb-4">
+                                <label htmlFor="cover" className="block text-light-text text-sm font-semibold mb-2">
+                                    Capa do Produto (Upload)
+                                </label>
+                                <input
+                                    type="file"
+                                    id="cover"
+                                    name="cover"
+                                    onChange={handleChange}
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-coral-suave focus:border-transparent text-dark-text bg-white shadow-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-dourado-claro file:text-dark-text hover:file:bg-dourado-claro/80"
+                                />
+                                {productData.cover && (
+                                    <p className="mt-2 text-sm text-light-text">Arquivo selecionado: {productData.cover.name}</p>
+                                )}
+                            </div>
+                            <InputField label="Descrição Breve" name="descriptionBrief" value={productData.descriptionBrief} onChange={handleChange} placeholder="Um parágrafo curto sobre o produto." rows={2} type="textarea" />
+                            <InputField label="Descrição Detalhada" name="descriptionDetailed" value={productData.descriptionDetailed} onChange={handleChange} placeholder="Todos os detalhes, benefícios e o que seu cliente aprenderá." rows={5} type="textarea" />
+
+                            <div className="mb-4">
+                                <PrimaryButton onClick={handleGenerateAIContent} type="button" className="text-sm px-4 py-2 mt-2">
+                                    Gerar descrição com IA
+                                </PrimaryButton>
+                                {aiGeneratedText && <p className="text-green-600 text-sm mt-2">{aiGeneratedText}</p>}
+                            </div>
+
+                            <div className="flex gap-4 mb-4">
+                                <div className="w-1/2">
+                                    <InputField label="Preço" type="number" name="price" value={productData.price} onChange={handleChange} placeholder="99.00" />
+                                </div>
+                                <div className="w-1/2">
+                                    <label htmlFor="currency" className="block text-light-text text-sm font-semibold mb-2">
+                                        Moeda
+                                    </label>
+                                    <select
+                                        id="currency"
+                                        name="currency"
+                                        value={productData.currency}
+                                        onChange={handleChange}
+                                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-coral-suave focus:border-transparent text-dark-text bg-white shadow-sm"
+                                    >
+                                        <option value="USD">USD - Dólar Americano</option>
+                                        <option value="BRL">BRL - Real Brasileiro</option>
+                                        <option value="EUR">EUR - Euro</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <InputField label="Link do Conteúdo" name="contentLink" value={productData.contentLink} onChange={handleChange} placeholder="Ex: drive.google.com/link-do-ebook" />
+                            <div className="mb-6">
+                                <label htmlFor="gateway" className="block text-light-text text-sm font-semibold mb-2">
+                                    Gateway Preferencial
+                                </label>
+                                <select
+                                    id="gateway"
+                                    name="gateway"
+                                    value={productData.gateway}
+                                    onChange={handleChange}
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-coral-suave focus:border-transparent text-dark-text bg-white shadow-sm"
+                                >
+                                    <option value="Stripe">Stripe (EUA/Global)</option>
+                                    <option value="PayPal">PayPal (Global)</option>
+                                    <option value="Mercado Pago">Mercado Pago (Brasil)</option>
+                                    <option value="Mollie">Mollie (Europa)</option>
+                                </select>
+                            </div>
+                            <PrimaryButton type="submit" className="w-full">
+                                Publicar Produto
+                            </PrimaryButton>
+                        </form>
+                    </div>
+                </div>
+            );
+        };
+
+        // Componente Configuração de Gateway
+        const GatewayConfigPage = ({ onSave }) => {
+            const [selectedGateway, setSelectedGateway] = React.useState('Stripe');
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                console.log('Gateway selecionado:', selectedGateway);
+                onSave(); // Volta ao dashboard
+            };
+
+            return (
+                <div className="min-h-screen bg-nude p-6 md:p-10 font-sans">
+                    <div className="bg-white p-8 md:p-10 rounded-xl shadow-lg w-full max-w-md mx-auto">
+                        <h2 className="text-3xl font-bold text-dark-text mb-6 text-center">Configurar Gateway de Pagamento</h2>
+                        <p className="text-light-text mb-6 text-center">Escolha o gateway que melhor se adapta às suas necessidades. Lembre-se, a Rufino fica com apenas 10% de comissão por venda!</p>
+                        <form onSubmit={handleSubmit}>
+                            <div className="mb-4">
+                                <label className="block text-light-text text-sm font-semibold mb-2">
+                                    Opções de Gateway
+                                </label>
+                                <div className="space-y-3">
+                                    <label className="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                                        <input
+                                            type="radio"
+                                            name="gateway"
+                                            value="Stripe"
+                                            checked={selectedGateway === 'Stripe'}
+                                            onChange={() => setSelectedGateway('Stripe')}
+                                            className="form-radio h-5 w-5 text-coral-suave"
+                                        />
+                                        <span className="ml-3 text-dark-text font-medium">Stripe (EUA/Global)</span>
+                                    </label>
+                                    <label className="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                                        <input
+                                            type="radio"
+                                            name="gateway"
+                                            value="PayPal"
+                                            checked={selectedGateway === 'PayPal'}
+                                            onChange={() => setSelectedGateway('PayPal')}
+                                            className="form-radio h-5 w-5 text-coral-suave"
+                                        />
+                                        <span className="ml-3 text-dark-text font-medium">PayPal (Global)</span>
+                                    </label>
+                                    <label className="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                                        <input
+                                            type="radio"
+                                            name="gateway"
+                                            value="Mercado Pago"
+                                            checked={selectedGateway === 'Mercado Pago'}
+                                            onChange={() => setSelectedGateway('Mercado Pago')}
+                                            className="form-radio h-5 w-5 text-coral-suave"
+                                        />
+                                        <span className="ml-3 text-dark-text font-medium">Mercado Pago / PagSeguro (Brasil)</span>
+                                    </label>
+                                    <label className="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                                        <input
+                                            type="radio"
+                                            name="gateway"
+                                            value="Mollie"
+                                            checked={selectedGateway === 'Mollie'}
+                                            onChange={() => setSelectedGateway('Mollie')}
+                                            className="form-radio h-5 w-5 text-coral-suave"
+                                        />
+                                        <span className="ml-3 text-dark-text font-medium">Mollie (Europa)</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="bg-gray-100 p-4 rounded-lg text-sm text-dark-text mb-6">
+                                <p className="font-semibold">Simulação de Divisão de Receita:</p>
+                                <p>Você recebe: <span className="font-bold text-green-600">90%</span> da venda</p>
+                                <p>Rufino recebe: <span className="font-bold text-coral-suave">10%</span> de comissão</p>
+                            </div>
+                            <PrimaryButton type="submit" className="w-full">
+                                Salvar Configurações
+                            </PrimaryButton>
+                        </form>
+                    </div>
+                </div>
+            );
+        };
+
+        // Componente Editor Visual da Página de Vendas
+        const SalesPageEditor = ({ onSave }) => {
+            const [pageContent, setPageContent] = React.useState({
+                coverImage: 'https://placehold.co/800x200/DCC5AE/333333?text=Sua+Capa+Aqui',
+                title: 'Título Incrível do Seu Produto',
+                subtitle: 'Uma frase de impacto que conecta com seu público.',
+                longDescription: 'Aqui você descreve detalhadamente seu produto, seus benefícios, para quem ele é, e o que seu cliente irá conquistar. Seja inspiradora!',
+                socialProof: 'Depoimento 1: "Minha vida mudou depois deste produto!" - Cliente Feliz\nDepoimento 2: "Rufino e [Nome da Criadora] me ajudaram a crescer." - Empreendedora',
+                guaranteeBonus: 'Garantia de 7 dias ou seu dinheiro de volta. Bônus: Acesso exclusivo à comunidade Rufino!',
+            });
+            const [previewMode, setPreviewMode] = React.useState('desktop'); // 'desktop' or 'mobile'
+            const [aiGeneratedText, setAiGeneratedText] = React.useState('');
+
+            const handleChange = (e) => {
+                const { name, value } = e.target;
+                setPageContent((prev) => ({ ...prev, [name]: value }));
+            };
+
+            const handleGenerateAIContent = (field) => {
+                let generated = '';
+                if (field === 'longDescription') {
+                    generated = `Desvende o segredo para o sucesso com este curso transformador! Projetado para mulheres ambiciosas como você, ele oferece ferramentas práticas, insights valiosos e um roteiro claro para alcançar seus objetivos. Aprenda a [benefício 1], [benefício 2] e [benefício 3], e comece hoje mesmo sua jornada de empoderamento e realização.`;
+                } else if (field === 'socialProof') {
+                    generated = `"Este produto me deu a clareza que eu precisava. Minhas vendas duplicaram!" - Maria S.\n"A melhor mentoria da minha vida! Realmente virou o jogo para mim." - Ana L.`;
+                } else if (field === 'guaranteeBonus') {
+                    generated = `Sua satisfação é nossa prioridade! Oferecemos uma garantia incondicional de 30 dias. Se por algum motivo você não estiver 100% satisfeita, nós reembolsaremos seu investimento. Além disso, ao adquirir agora, você recebe um bônus exclusivo: acesso vitalício ao nosso grupo VIP no Telegram, onde compartilhamos dicas extras e suporte contínuo!`;
+                }
+                setPageContent((prev) => ({ ...prev, [field]: generated }));
+                setAiGeneratedText('Conteúdo gerado com IA para ' + field);
+                setTimeout(() => setAiGeneratedText(''), 3000); // Limpa a mensagem após 3 segundos
+            };
+
+            const simulatedTemplates = [
+                'https://placehold.co/150x100/FF8C6B/FFFFFF?text=Modelo+1',
+                'https://placehold.co/150x100/E1D8BE/333333?text=Modelo+2',
+                'https://placehold.co/150x100/FBF9F1/555555?text=Modelo+3',
+            ];
+
+            return (
+                <div className="min-h-screen bg-nude p-6 md:p-10 font-sans flex flex-col lg:flex-row gap-8">
+                    {/* Coluna de Edição */}
+                    <div className="flex-1 bg-white p-8 md:p-10 rounded-xl shadow-lg">
+                        <h2 className="text-3xl font-bold text-dark-text mb-6 text-center">Editor da Página de Vendas</h2>
+                        <div className="mb-6">
+                            <label className="block text-light-text text-sm font-semibold mb-2">
+                                Escolha um Template Feminino
+                            </label>
+                            <div className="flex space-x-4 overflow-x-auto pb-2">
+                                {simulatedTemplates.map((template, index) => (
+                                    <img
+                                        key={index}
+                                        src={template}
+                                        alt={`Template ${index + 1}`}
+                                        className="w-24 h-16 md:w-32 md:h-20 object-cover rounded-lg cursor-pointer border-2 border-gray-200 hover:border-coral-suave transition-colors"
+                                        title="Simula a seleção de um template"
+                                    />
+                                ))}
+                            </div>
+                            <p className="text-xs text-light-text mt-2">Clique para pré-visualizar e aplicar um template.</p>
+                        </div>
+
+                        {/* Simulação de blocos arrastáveis */}
+                        <div className="space-y-6">
+                            <h3 className="text-xl font-semibold text-dark-text mb-4">Blocos de Conteúdo</h3>
+                            {/* Bloco Imagem de capa */}
+                            <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                <h4 className="font-semibold text-md text-dark-text mb-2">Imagem de Capa</h4>
+                                <InputField label="URL da Imagem" name="coverImage" value={pageContent.coverImage} onChange={handleChange} placeholder="https://exemplo.com/sua-capa.jpg" />
+                                <p className="text-sm text-light-text">Arraste para mudar ordem (simulado)</p>
+                            </div>
+
+                            {/* Bloco Título + subtítulo */}
+                            <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                <h4 className="font-semibold text-md text-dark-text mb-2">Título e Subtítulo</h4>
+                                <InputField label="Título" name="title" value={pageContent.title} onChange={handleChange} />
+                                <InputField label="Subtítulo" name="subtitle" value={pageContent.subtitle} onChange={handleChange} />
+                            </div>
+
+                            {/* Bloco Descrição longa com IA */}
+                            <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                <h4 className="font-semibold text-md text-dark-text mb-2">Descrição Longa</h4>
+                                <InputField label="Conteúdo da Descrição" name="longDescription" value={pageContent.longDescription} onChange={handleChange} rows={5} type="textarea" />
+                                <PrimaryButton onClick={() => handleGenerateAIContent('longDescription')} type="button" className="text-sm px-4 py-2 mt-2">
+                                    Gerar com IA
+                                </PrimaryButton>
+                                {aiGeneratedText && <p className="text-green-600 text-sm mt-2">{aiGeneratedText.includes('longDescription') ? aiGeneratedText : ''}</p>}
+                            </div>
+
+                            {/* Bloco Prova social com IA */}
+                            <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                <h4 className="font-semibold text-md text-dark-text mb-2">Prova Social (Depoimentos)</h4>
+                                <InputField label="Depoimentos" name="socialProof" value={pageContent.socialProof} onChange={handleChange} rows={3} type="textarea" />
+                                <PrimaryButton onClick={() => handleGenerateAIContent('socialProof')} type="button" className="text-sm px-4 py-2 mt-2">
+                                    Gerar com IA
+                                </PrimaryButton>
+                                {aiGeneratedText && <p className="text-green-600 text-sm mt-2">{aiGeneratedText.includes('socialProof') ? aiGeneratedText : ''}</p>}
+                            </div>
+
+                            {/* Bloco Garantia, Bônus, Botão de Compra com IA */}
+                            <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                <h4 className="font-semibold text-md text-dark-text mb-2">Garantia e Bônus</h4>
+                                <InputField label="Texto da Garantia/Bônus" name="guaranteeBonus" value={pageContent.guaranteeBonus} onChange={handleChange} rows={3} type="textarea" />
+                                <PrimaryButton onClick={() => handleGenerateAIContent('guaranteeBonus')} type="button" className="text-sm px-4 py-2 mt-2">
+                                    Gerar com IA
+                                </PrimaryButton>
+                                {aiGeneratedText && <p className="text-green-600 text-sm mt-2">{aiGeneratedText.includes('guaranteeBonus') ? aiGeneratedText : ''}</p>}
+                            </div>
+                        </div>
+
+                        <PrimaryButton onClick={onSave} className="w-full mt-8">
+                            Salvar Página
+                        </PrimaryButton>
+                    </div>
+
+                    {/* Coluna de Preview */}
+                    <div className="flex-1 lg:max-w-md bg-white p-6 rounded-xl shadow-lg mt-8 lg:mt-0">
+                        <div className="flex justify-center mb-4">
+                            <button
+                                onClick={() => setPreviewMode('desktop')}
+                                className={`px-4 py-2 rounded-l-lg border ${previewMode === 'desktop' ? 'bg-coral-suave text-white' : 'bg-gray-100 text-dark-text border-gray-300'}`}
+                            >
+                                Desktop Preview
+                            </button>
+                            <button
+                                onClick={() => setPreviewMode('mobile')}
+                                className={`px-4 py-2 rounded-r-lg border ${previewMode === 'mobile' ? 'bg-coral-suave text-white' : 'bg-gray-100 text-dark-text border-gray-300'}`}
+                            >
+                                Mobile Preview
+                            </button>
+                        </div>
+
+                        <div className={`border-2 border-gray-300 rounded-xl overflow-hidden shadow-inner mx-auto ${previewMode === 'mobile' ? 'w-full max-w-[375px] h-[667px]' : 'w-full h-[600px]'} transition-all duration-300 ease-in-out`}>
+                            <div className="p-4 bg-nude overflow-y-auto h-full text-left">
+                                {/* Conteúdo da Preview */}
+                                <img src={pageContent.coverImage} alt="Capa da Página" className="w-full h-auto rounded-md mb-4" />
+                                <h1 className="text-3xl font-bold text-dark-text mb-2">{pageContent.title}</h1>
+                                <p className="text-lg text-light-text mb-4">{pageContent.subtitle}</p>
+                                <p className="text-light-text mb-6 whitespace-pre-wrap">{pageContent.longDescription}</p>
+                                <div className="bg-dourado-claro/20 p-4 rounded-lg mb-6">
+                                    <h3 className="font-semibold text-dark-text mb-2">O que as criadoras estão dizendo:</h3>
+                                    <p className="text-sm text-light-text whitespace-pre-wrap">{pageContent.socialProof}</p>
+                                </div>
+                                <div className="bg-coral-suave/10 p-4 rounded-lg mb-6">
+                                    <h3 className="font-semibold text-dark-text mb-2">Sua Oportunidade Única</h3>
+                                    <p className="text-sm text-light-text whitespace-pre-wrap">{pageContent.guaranteeBonus}</p>
+                                </div>
+                                <PrimaryButton className="w-full">Compre Agora</PrimaryButton>
+                            </div>
+                        </div>
+                        <p className="text-center text-sm text-light-text mt-4">Pré-visualização em tempo real</p>
+                    </div>
+                </div>
+            );
+        };
+
+        // Componente Página Pública da Criadora
+        const PublicCreatorPage = ({ creatorName, onProductClick, onReturnHome }) => {
+            const products = [
+                { id: 1, name: 'Ebook: Despertar Feminino', price: 'USD 49.99', imageUrl: 'https://placehold.co/300x200/FBF9F1/dark-text?text=Ebook', description: 'Um guia completo para sua jornada de autoconhecimento.' },
+                { id: 2, name: 'Curso: Marketing Digital Essencial', price: 'USD 199.00', imageUrl: 'https://placehold.co/300x200/E1D8BE/dark-text?text=Curso', description: 'Aprenda estratégias de marketing para escalar seu negócio.' },
+                { id: 3, name: 'Mentoria 1-1: Sucesso Empresarial', price: 'USD 499.00', imageUrl: 'https://placehold.co/300x200/FF8C6B/white?text=Mentoria', description: 'Sessões personalizadas para acelerar seus resultados.' },
+            ];
+
+            return (
+                <div className="min-h-screen bg-nude p-6 md:p-10 font-sans text-center">
+                    <div className="w-full max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-8 md:p-10 relative">
+                        <button onClick={onReturnHome} className="absolute top-4 left-4 text-dark-text hover:text-coral-suave text-sm flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            Voltar para o Dashboard
+                        </button>
+                        <img
+                            src="https://placehold.co/120x120/DCC5AE/333333?text=Sua+Foto"
+                            alt="Foto de Perfil da Criadora"
+                            className="w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 border-dourado-claro"
+                        />
+                        <h1 className="text-4xl font-bold text-dark-text mb-2">@{creatorName}</h1>
+                        <p className="text-light-text mb-6 max-w-xl mx-auto">
+                            Sou uma empreendedora apaixonada por [nicho], dedicada a empoderar mulheres a transformarem suas paixões em negócios de sucesso. Aqui você encontra meus produtos digitais exclusivos!
+                        </p>
+                        <div className="flex justify-center space-x-4 mb-8">
+                            <a href="#" className="text-coral-suave hover:text-dark-text transition duration-200">Instagram</a>
+                            <a href="#" className="text-coral-suave hover:text-dark-text transition duration-200">LinkedIn</a>
+                            <a href="#" className="text-coral-suave hover:text-dark-text transition duration-200">Website</a>
+                        </div>
+
+                        <h2 className="text-3xl font-bold text-dark-text mb-8">Meus Produtos</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {products.map((product) => (
+                                <div key={product.id} className="bg-nude rounded-xl shadow-md overflow-hidden transform hover:scale-105 transition duration-300 ease-in-out">
+                                    <img src={product.imageUrl} alt={product.name} className="w-full h-48 object-cover" />
+                                    <div className="p-4">
+                                        <h3 className="text-xl font-semibold text-dark-text mb-2">{product.name}</h3>
+                                        <p className="text-light-text text-sm mb-3">{product.description}</p>
+                                        <p className="text-coral-suave font-bold text-lg mb-4">{product.price}</p>
+                                        <PrimaryButton onClick={() => onProductClick(product)} className="w-full text-sm">
+                                            Ver Mais
+                                        </PrimaryButton>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Componente Checkout Simulado
+        const CheckoutPage = ({ product, onPurchaseComplete, onReturnToPublicPage }) => {
+            const [formData, setFormData] = React.useState({ name: '', email: '' });
+            const [selectedGateway, setSelectedGateway] = React.useState('Stripe');
+
+            const handleChange = (e) => {
+                const { name, value } = e.target;
+                setFormData((prev) => ({ ...prev, [name]: value }));
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                console.log('Finalizando compra:', formData, product, selectedGateway);
+                onPurchaseComplete(product.name);
+            };
+
+            return (
+                <div className="min-h-screen bg-nude p-6 md:p-10 font-sans flex flex-col items-center justify-center">
+                    <div className="w-full max-w-md bg-white p-8 md:p-10 rounded-xl shadow-lg relative">
+                        <button onClick={onReturnToPublicPage} className="absolute top-4 left-4 text-dark-text hover:text-coral-suave text-sm flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            Voltar
+                        </button>
+                        <h2 className="text-3xl font-bold text-dark-text mb-6 text-center">Checkout</h2>
+                        <div className="bg-dourado-claro/20 p-4 rounded-lg mb-6 text-center">
+                            <h3 className="text-xl font-semibold text-dark-text mb-2">{product.name}</h3>
+                            <p className="text-coral-suave font-bold text-2xl">{product.price}</p>
+                            <p className="text-sm text-light-text mt-2">Moeda e idioma detectados automaticamente</p>
+                        </div>
+
+                        <form onSubmit={handleSubmit}>
+                            <InputField label="Nome Completo" name="name" value={formData.name} onChange={handleChange} placeholder="Seu nome" />
+                            <InputField label="E-mail" type="email" name="email" value={formData.email} onChange={handleChange} placeholder="seu@email.com" />
+
+                            <div className="mb-6">
+                                <label className="block text-light-text text-sm font-semibold mb-2">
+                                    Escolha seu Gateway de Pagamento
+                                </label>
+                                <div className="space-y-2">
+                                    <label className="flex items-center p-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                                        <input type="radio" name="gateway" value="Stripe" checked={selectedGateway === 'Stripe'} onChange={() => setSelectedGateway('Stripe')} className="form-radio h-4 w-4 text-coral-suave" />
+                                        <span className="ml-2 text-dark-text">Stripe</span>
+                                    </label>
+                                    <label className="flex items-center p-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                                        <input type="radio" name="gateway" value="PayPal" checked={selectedGateway === 'PayPal'} onChange={() => setSelectedGateway('PayPal')} className="form-radio h-4 w-4 text-coral-suave" />
+                                        <span className="ml-2 text-dark-text">PayPal</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <PrimaryButton type="submit" className="w-full">
+                                Finalizar Compra
+                            </PrimaryButton>
+                        </form>
+                    </div>
+                </div>
+            );
+        };
+
+        // Componente Tela de Agradecimento
+        const ThankYouPage = ({ productName, onReturnToDashboard }) => (
+            <div className="min-h-screen bg-nude flex flex-col items-center justify-center p-6 md:p-10 font-sans text-center">
+                <div className="bg-white p-8 md:p-10 rounded-xl shadow-lg w-full max-w-md">
+                    <h2 className="text-4xl font-bold text-coral-suave mb-4">Parabéns! ✨</h2>
+                    <p className="text-2xl text-dark-text mb-6 leading-relaxed">Você acaba de investir em você mesma com a compra de <span className="font-semibold">"{productName}"</span>!</p>
+                    <p className="text-light-text mb-8">Um e-mail com os detalhes do seu pedido e acesso ao conteúdo foi enviado para você. Aproveite esta nova jornada!</p>
+                    <PrimaryButton onClick={onReturnToDashboard}>
+                        Voltar para o Dashboard
+                    </PrimaryButton>
+                </div>
+            </div>
+        );
+
+        // Componente Principal da Aplicação
+        const App = () => {
+            const [currentScreen, setCurrentScreen] = React.useState('landing'); // landing, registration, dashboard, addProduct, gatewayConfig, salesPageEditor, publicCreatorPage, checkout, thankYou
+            const [creatorName, setCreatorName] = React.useState('Camila');
+            const [selectedProduct, setSelectedProduct] = React.useState(null); // Para o checkout
+
+            const navigateTo = (screen) => setCurrentScreen(screen);
+
+            const handleRegisterSuccess = (name) => {
+                setCreatorName(name);
+                navigateTo('dashboard');
+            };
+
+            const handleProductSave = () => {
+                // Aqui você adicionaria a lógica para salvar o produto no estado global/contexto
+                navigateTo('dashboard');
+            };
+
+            const handleGatewaySave = () => {
+                navigateTo('dashboard');
+            };
+
+            const handleSalesPageSave = () => {
+                navigateTo('dashboard');
+            };
+
+            const handleProductClick = (product) => {
+                setSelectedProduct(product);
+                navigateTo('checkout');
+            };
+
+            const handlePurchaseComplete = (productName) => {
+                setSelectedProduct({ name: productName }); // Apenas o nome para a tela de agradecimento
+                navigateTo('thankYou');
+            };
+
+            return (
+                <div className="min-h-screen">
+                    {currentScreen === 'landing' && <LandingPage onStartClick={() => navigateTo('registration')} />}
+                    {currentScreen === 'registration' && <RegistrationPage onRegisterSuccess={handleRegisterSuccess} />}
+                    {currentScreen === 'dashboard' && (
+                        <DashboardPage
+                            creatorName={creatorName}
+                            onAddProduct={() => navigateTo('addProduct')}
+                            onViewSalesPage={() => navigateTo('salesPageEditor')}
+                            onConfigureGateway={() => navigateTo('gatewayConfig')}
+                        />
+                    )}
+                    {currentScreen === 'addProduct' && <AddProductPage onProductSave={handleProductSave} />}
+                    {currentScreen === 'gatewayConfig' && <GatewayConfigPage onSave={handleGatewaySave} />}
+                    {currentScreen === 'salesPageEditor' && <SalesPageEditor onSave={handleSalesPageSave} />}
+                    {currentScreen === 'publicCreatorPage' && (
+                        <PublicCreatorPage
+                            creatorName={creatorName}
+                            onProductClick={handleProductClick}
+                            onReturnHome={() => navigateTo('dashboard')}
+                        />
+                    )}
+                    {currentScreen === 'checkout' && selectedProduct && (
+                        <CheckoutPage
+                            product={selectedProduct}
+                            onPurchaseComplete={handlePurchaseComplete}
+                            onReturnToPublicPage={() => navigateTo('publicCreatorPage')}
+                        />
+                    )}
+                    {currentScreen === 'thankYou' && selectedProduct && (
+                        <ThankYouPage
+                            productName={selectedProduct.name}
+                            onReturnToDashboard={() => navigateTo('dashboard')}
+                        />
+                    )}
+                </div>
+            );
+        };
+
+        // Renderiza o componente principal React no elemento com id 'root'
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
