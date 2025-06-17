@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rufino: Loja da Buba Rufino</title>
+    <!-- Google Fonts: Sora, Nunito, Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Nunito:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style type="text/tailwindcss">
+        /* Configuração do Tailwind CSS para cores e fontes personalizadas */
+        @layer base {
+            html {
+                font-family: 'Nunito', 'Inter', sans-serif; /* Fonte padrão para o corpo, com Inter como fallback */
+            }
+            h1, h2, h3, h4, h5, h6 {
+                font-family: 'Sora', sans-serif; /* Fonte para títulos */
+            }
+        }
+        @tailwind base;
+        @tailwind components;
+        @tailwind utilities;
+
+        /* Animações básicas para um visual mais dinâmico */
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+    <script>
+        // Configuração do Tailwind CSS com a paleta de cores
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'rufino-white': '#FFFFFF',
+                        'rufino-light-gold': '#E1D8BE', /* dourado suave */
+                        'rufino-soft-pink': '#FFD6E0', /* rosa claro */
+                        'rufino-soft-lavender': '#E0E0FF', /* lavanda suave */
+                        'rufino-dark-text': '#333333',
+                        'rufino-light-text': '#555555',
+                        'rufino-accent': '#FF8C6B', /* Coral suave, para CTAs e destaques */
+                        'rufino-bg-light': '#FBF9F1', /* Nude, para fundos leves */
+                    },
+                    fontFamily: {
+                        sora: ['Sora', 'sans-serif'],
+                        nunito: ['Nunito', 'sans-serif'],
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
+</head>
+<body class="font-nunito text-rufino-dark-text">
+    <div id="root"></div>
+
+    <!-- Importa React e ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Importa Babel para transpilar JSX no navegador (apenas para desenvolvimento/prototipagem) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+        // Componente de botão primário
+        const PrimaryButton = ({ children, onClick, className = '', type = 'button' }) => (
+            <button
+                type={type}
+                onClick={onClick}
+                className={`bg-rufino-accent text-rufino-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300 ease-in-out ${className}`}
+            >
+                {children}
+            </button>
+        );
+
+        // Componente de campo de input
+        const InputField = ({ label, type = 'text', name, value, onChange, placeholder = '', rows = 1 }) => (
+            <div className="mb-4">
+                <label htmlFor={name} className="block text-rufino-light-text text-sm font-semibold mb-2">
+                    {label}
+                </label>
+                {type === 'textarea' ? (
+                    <textarea
+                        id={name}
+                        name={name}
+                        value={value}
+                        onChange={onChange}
+                        placeholder={placeholder}
+                        rows={rows}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rufino-accent focus:border-transparent text-rufino-dark-text bg-rufino-white shadow-sm"
+                    ></textarea>
+                ) : (
+                    <input
+                        type={type}
+                        id={name}
+                        name={name}
+                        value={value}
+                        onChange={onChange}
+                        placeholder={placeholder}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rufino-accent focus:border-transparent text-rufino-dark-text bg-rufino-white shadow-sm"
+                    />
+                )}
+            </div>
+        );
+
+        // Dados simulados para a criadora e seus produtos (Foco na Buba Rufino)
+        const bubaRufino = {
+            id: 'buba-rufino',
+            name: 'Buba Rufino',
+            bio: 'Ajudo mulheres a lucrarem com conteúdo estratégico 💖 Ative seu poder feminino e transforme sua paixão em um negócio próspero.',
+            profilePic: 'https://placehold.co/120x120/FFD6E0/333333?text=Buba',
+            bannerImage: 'https://placehold.co/1200x300/E1D8BE/333333?text=Banner+Loja+Buba',
+            instagram: 'https://instagram.com/buba_rufino',
+            tiktok: 'https://tiktok.com/@buba_rufino',
+            whatsapp: 'https://wa.me/5511999999999',
+            isVerified: true,
+            audioMessageAfterPurchase: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3', // Mensagem em áudio da criadora
+            audioMessageText: 'Olá! Que alegria ter você aqui. Agradeço imensamente sua confiança no meu trabalho. Mal posso esperar para ver sua transformação!',
+        };
+
+        const bubaProductsData = [
+            {
+                id: 'bp1',
+                name: 'Ebook: Conteúdo que Vende',
+                imageUrl: 'https://placehold.co/400x300/FFD6E0/333333?text=Ebook+Vendas',
+                type: 'Ebook',
+                price: { USD: 37.00, BRL: 187.00, EUR: 34.00 },
+                descriptionBrief: 'Descubra a fórmula para criar conteúdo irresistível que converte seguidores em clientes.',
+                descriptionDetailed: 'Neste ebook prático, a Buba Rufino compartilha suas estratégias secretas para dominar a arte do conteúdo digital. Você aprenderá a identificar sua persona, criar narrativas envolventes, otimizar posts para alta performance e transformar sua comunicação em uma máquina de vendas. Ideal para empreendedoras digitais, influenciadoras e coaches que querem levar seu negócio para o próximo nível.',
+                structure: ['Capítulo 1: Sua Persona Ideal', 'Capítulo 2: A Anatomia do Conteúdo de Sucesso', 'Capítulo 3: Estratégias para Cada Plataforma', 'Bônus: 10 Templates de Conteúdo Prontos'],
+                guarantee: '7 dias para testar com amor 💌 Se não amar, devolvemos seu dinheiro.',
+                reviews: [
+                    { id: 1, author: 'Giovanna C.', rating: 5, text: 'O ebook é incrível! Apliquei as dicas e minhas vendas triplicaram.' },
+                    { id: 2, author: 'Larissa M.', rating: 5, text: 'A Buba simplifica o marketing de conteúdo de um jeito que ninguém faz.' },
+                ],
+            },
+            {
+                id: 'bp2',
+                name: 'Mentoria em Grupo: Escala Digital',
+                imageUrl: 'https://placehold.co/400x300/E0E0FF/333333?text=Mentoria+Escala',
+                type: 'Mentoria',
+                price: { USD: 297.00, BRL: 1497.00, EUR: 275.00 },
+                descriptionBrief: 'Sua jornada guiada para escalar seu negócio digital e alcançar sua liberdade.',
+                descriptionDetailed: 'Junte-se à Buba Rufino em um programa de mentoria em grupo exclusivo, onde você terá acesso direto às estratégias que a ajudaram a construir um império digital. Com foco em vendas, automação e expansão de equipe, você aprenderá a delegar, otimizar processos e liberar seu tempo para o que realmente importa. As vagas são limitadas para garantir atenção personalizada.',
+                structure: ['4 Encontros Ao Vivo em Grupo (Zoom)', 'Sessões de Q&A Semanais', 'Comunidade Exclusiva no Telegram', 'Materiais Complementares e Ferramentas'],
+                guarantee: 'Resultados comprovados ou acompanhamento extra.',
+                reviews: [
+                    { id: 3, author: 'Sofia N.', rating: 5, text: 'Melhor investimento do ano! A energia da Buba é contagiante.' },
+                    { id: 4, author: 'Renata L.', rating: 4, text: 'Me ajudou a ver meu negócio com outros olhos e a crescer.' },
+                ],
+            },
+            {
+                id: 'bp3',
+                name: 'Curso Online: Instagram Magnético',
+                imageUrl: 'https://placehold.co/400x300/E1D8BE/333333?text=Curso+Instagram',
+                type: 'Curso',
+                price: { USD: 97.00, BRL: 497.00, EUR: 89.00 },
+                descriptionBrief: 'Domine o Instagram e transforme seu perfil em um ímã de clientes ideais.',
+                descriptionDetailed: 'A Buba Rufino revela todos os seus segredos para criar um Instagram autêntico e altamente lucrativo. Do posicionamento à criação de reels que viralizam, passando por estratégias de Stories e DMs que vendem, este curso é seu mapa para se destacar na plataforma e atrair sua audiência dos sonhos, sem precisar de milhares de seguidores. Seja a autoridade que sua audiência busca!',
+                structure: ['Módulo 1: O Pilar do Posicionamento', 'Módulo 2: Conteúdo Irresistível', 'Módulo 3: Estratégias de Crescimento Orgânico', 'Módulo 4: Vendas Diretas e Automação', 'Bônus: Acesso a todas as atualizações futuras'],
+                guarantee: 'Sua satisfação garantida em 15 dias.',
+                reviews: [
+                    { id: 5, author: 'Isabella F.', rating: 5, text: 'Meu Instagram nunca mais foi o mesmo depois desse curso. Recomendo muito!' },
+                    { id: 6, author: 'Gabriela V.', rating: 4, text: 'As dicas são ouro puro! Já estou vendo resultados.' },
+                ],
+            },
+        ];
+
+        // Componente Card de Produto (reutilizável)
+        const ProductCard = ({ product, onProductClick, wishlist, toggleWishlist }) => {
+            const isWishlisted = wishlist.includes(product.id);
+
+            return (
+                <div className="bg-rufino-white rounded-xl shadow-md overflow-hidden transform hover:scale-105 transition duration-300 ease-in-out flex flex-col h-full">
+                    <img src={product.imageUrl} alt={product.name} className="w-full h-48 object-cover" />
+                    <div className="p-4 flex flex-col flex-grow">
+                        <h3 className="text-xl font-sora font-semibold text-rufino-dark-text mb-2 line-clamp-2">{product.name}</h3>
+                        <p className="text-rufino-light-text text-sm mb-1">{product.type}</p>
+                        <p className="text-rufino-light-text text-sm mb-3 line-clamp-2 flex-grow">{product.descriptionBrief}</p>
+                        <p className="text-rufino-accent font-bold text-lg mb-4">
+                            USD {product.price.USD.toFixed(2)} {/* Preço sempre em USD para a vitrine inicial */}
+                        </p>
+                        <div className="flex items-center justify-between mt-auto">
+                            <PrimaryButton onClick={() => onProductClick(product.id)} className="text-sm px-4 py-2">
+                                Ver mais
+                            </PrimaryButton>
+                            <button
+                                onClick={() => toggleWishlist(product.id)}
+                                className={`p-2 rounded-full transition duration-300 ease-in-out ${
+                                    isWishlisted ? 'bg-rufino-soft-pink text-rufino-accent' : 'bg-gray-100 text-rufino-light-text hover:bg-rufino-soft-pink/50 hover:text-rufino-accent'
+                                }`}
+                                title={isWishlisted ? 'Remover da Wishlist' : 'Salvar para depois'}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill={isWishlisted ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 22.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Componente Página Pública da Loja da Criadora
+        const CreatorStorePage = ({ creator, products, onProductClick, wishlist, toggleWishlist, onShareWishlist }) => {
+            return (
+                <div className="min-h-screen bg-rufino-bg-light font-nunito text-rufino-dark-text">
+                    {/* Banner da Criadora */}
+                    <div className="relative w-full h-64 md:h-80 bg-cover bg-center animate-fade-in" style={{ backgroundImage: `url(${creator.bannerImage})` }}>
+                        <div className="absolute inset-0 bg-black opacity-30"></div>
+                        <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
+                            <div className="relative z-10">
+                                <img src={creator.profilePic} alt={creator.name} className="w-28 h-28 md:w-36 md:h-36 rounded-full mx-auto object-cover border-4 border-rufino-white shadow-xl mb-4" />
+                                <h1 className="text-4xl md:text-5xl font-sora font-bold text-rufino-white leading-tight mb-2">{creator.name}</h1>
+                                <p className="text-lg md:text-xl text-rufino-white opacity-90 max-w-2xl mx-auto">{creator.bio}</p>
+                                {creator.isVerified && (
+                                    <span className="inline-flex items-center mt-3 px-3 py-1 rounded-full text-sm font-semibold bg-rufino-white text-rufino-light-gold shadow-md">
+                                        Loja verificada ✨
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Links Sociais */}
+                    <div className="bg-rufino-white py-4 shadow-md mb-8 animate-fade-in delay-100">
+                        <div className="flex justify-center space-x-6">
+                            <a href={creator.instagram} target="_blank" rel="noopener noreferrer" className="text-rufino-accent hover:text-rufino-dark-text transition duration-200 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                                Instagram
+                            </a>
+                            <a href={creator.tiktok} target="_blank" rel="noopener noreferrer" className="text-rufino-accent hover:text-rufino-dark-text transition duration-200 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path d="M9 1v17c0 1.66-1.34 3-3 3s-3-1.34-3-3V1h6zm6 0v17c0 1.66-1.34 3-3 3s-3-1.34-3-3V1h6z"></path></svg>
+                                TikTok
+                            </a>
+                            <a href={creator.whatsapp} target="_blank" rel="noopener noreferrer" className="text-rufino-accent hover:text-rufino-dark-text transition duration-200 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path d="M12.9 5.86c-.52.2-1.12.33-1.78.33-3.64 0-6.59-2.95-6.59-6.59S7.48 0 11.12 0c.66 0 1.26.13 1.78.33V5.86zm-1.78-4.52C7.48 1.34 4.53 4.29 4.53 7.93s2.95 6.59 6.59 6.59c3.64 0 6.59-2.95 6.59-6.59s-2.95-6.59-6.59-6.59zM20 18l-2.45-2.45c-.53-.53-.88-.7-1.42-.7-.41 0-.82.1-1.2.29l-3.32 1.54c-.9.42-1.92.42-2.82 0l-3.32-1.54c-.38-.19-.79-.29-1.2-.29-.54 0-.89.17-1.42.7L4 18c-.78.78-.78 2.05 0 2.83.78.78 2.05.78 2.83 0L9.26 19c.53-.53.88-.7 1.42-.7.41 0 .82.1 1.2.29l3.32 1.54c.9.42 1.92.42 2.82 0l3.32-1.54c.38-.19.79-.29 1.2-.29.54 0 .89.17 1.42.7l.6 1.45c.78.78 2.05.78 2.83 0 .78-.78.78-2.05 0-2.83L20 18z"></path></svg>
+                                WhatsApp
+                            </a>
+                        </div>
+                    </div>
+
+                    {/* Produtos da Criadora */}
+                    <section className="p-6 md:p-10 max-w-6xl mx-auto animate-fade-in delay-200">
+                        <h2 className="text-4xl font-sora font-bold text-rufino-dark-text mb-8 text-center">Meus Produtos para sua Transformação ✨</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {products.map(product => (
+                                <ProductCard
+                                    key={product.id}
+                                    product={product}
+                                    onProductClick={onProductClick}
+                                    wishlist={wishlist}
+                                    toggleWishlist={toggleWishlist}
+                                />
+                            ))}
+                        </div>
+
+                        {/* Wishlist Compartilhável (Inovação Opcional) */}
+                        {wishlist.length > 0 && (
+                            <div className="mt-12 bg-rufino-soft-lavender/30 p-8 rounded-xl shadow-inner text-center animate-fade-in delay-300">
+                                <h3 className="text-2xl font-sora font-bold text-rufino-dark-text mb-4">Sua Lista de Desejos de Transformação 💖</h3>
+                                <p className="text-rufino-light-text mb-6">Você salvou {wishlist.length} produto(s)! Compartilhe com uma amiga e inspire-se juntas.</p>
+                                <PrimaryButton onClick={onShareWishlist} className="text-lg px-6 py-3">
+                                    Compartilhar Wishlist com Amigas!
+                                </PrimaryButton>
+                                <p className="text-sm text-rufino-light-text mt-4">
+                                    Um link seguro com seus produtos salvos será gerado para você compartilhar.
+                                </p>
+                            </div>
+                        )}
+                    </section>
+                </div>
+            );
+        };
+
+        // Componente Página de Produto Individual
+        const ProductPage = ({ product, creator, onBuyClick, onBack, wishlist, toggleWishlist }) => {
+            if (!product || !creator) {
+                return <div className="min-h-screen bg-rufino-bg-light flex items-center justify-center">Produto não encontrado.</div>;
+            }
+
+            const isWishlisted = wishlist.includes(product.id);
+            const [currentCurrency, setCurrentCurrency] = React.useState('USD'); // Default to USD
+
+            // Simulação de detecção de moeda baseada em uma suposta localização do visitante
+            // Em um ambiente real, isso seria feito por APIs de geolocalização ou cabeçalhos HTTP
+            React.useEffect(() => {
+                const detectCurrency = () => {
+                    const country = prompt("Simulação: Em que país você está? (Brasil, EUA, Alemanha, etc.)").toLowerCase();
+                    if (country.includes('brasil')) {
+                        setCurrentCurrency('BRL');
+                    } else if (country.includes('eua') || country.includes('estados unidos')) {
+                        setCurrentCurrency('USD');
+                    } else if (country.includes('alemanha') || country.includes('frança') || country.includes('europa')) {
+                        setCurrentCurrency('EUR');
+                    } else {
+                        setCurrentCurrency('USD'); // Fallback
+                    }
+                };
+                // detectCurrency(); // Descomente para ativar o prompt de simulação de moeda
+            }, []);
+
+            const displayPrice = product.price[currentCurrency] || product.price.USD; // Fallback para USD se a moeda não estiver disponível
+
+            return (
+                <div className="min-h-screen bg-rufino-bg-light p-6 md:p-10 font-nunito">
+                    <div className="max-w-4xl mx-auto bg-rufino-white rounded-xl shadow-lg p-6 md:p-8 relative animate-fade-in">
+                        <button onClick={onBack} className="absolute top-4 left-4 text-rufino-dark-text hover:text-rufino-accent text-sm flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            Voltar para a loja
+                        </button>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                            <div>
+                                <img src={product.imageUrl} alt={product.name} className="w-full h-auto rounded-lg shadow-md mb-6" />
+                                <div className="bg-rufino-soft-pink/30 p-4 rounded-lg mb-6">
+                                    <h4 className="font-sora font-semibold text-rufino-dark-text mb-2">Estrutura do Produto:</h4>
+                                    <ul className="list-disc list-inside text-rufino-light-text text-sm space-y-1">
+                                        {product.structure.map((item, index) => <li key={index}>{item}</li>)}
+                                    </ul>
+                                </div>
+                                <div className="bg-rufino-soft-lavender/30 p-4 rounded-lg mb-6">
+                                    <h4 className="font-sora font-semibold text-rufino-dark-text mb-2">Prova Social:</h4>
+                                    <div className="space-y-4 max-h-48 overflow-y-auto pr-2">
+                                        {product.reviews.map(review => (
+                                            <div key={review.id} className="pb-3 border-b border-gray-200 last:border-b-0">
+                                                <div className="flex items-center mb-1">
+                                                    <span className="font-semibold text-rufino-dark-text">{review.author}</span>
+                                                    <span className="ml-2 text-yellow-500 flex">
+                                                        {[...Array(review.rating)].map((_, i) => (
+                                                            <svg key={i} className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                            </svg>
+                                                        ))}
+                                                    </span>
+                                                </div>
+                                                <p className="text-rufino-light-text text-sm italic">"{review.text}"</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h1 className="text-4xl font-sora font-bold text-rufino-dark-text mb-3 leading-tight">{product.name}</h1>
+                                <p className="text-xl text-rufino-light-text mb-4">Por <span className="font-semibold text-rufino-accent">{creator.name}</span></p>
+
+                                <p className="text-rufino-light-text mb-6 leading-relaxed">{product.descriptionDetailed}</p>
+
+                                <h3 className="text-3xl font-sora font-bold text-rufino-accent mb-6">
+                                    {currentCurrency} {displayPrice.toFixed(2)}
+                                </h3>
+                                <div className="flex gap-4 mb-4">
+                                    <PrimaryButton onClick={() => onBuyClick(product)} className="flex-1">
+                                        Comprar Agora
+                                    </PrimaryButton>
+                                    <button
+                                        onClick={() => toggleWishlist(product.id)}
+                                        className={`flex-none p-3 rounded-xl transition duration-300 ease-in-out ${
+                                            isWishlisted ? 'bg-rufino-soft-pink text-rufino-accent' : 'bg-gray-100 text-rufino-light-text hover:bg-rufino-soft-pink/50 hover:text-rufino-accent'
+                                        }`}
+                                        title={isWishlisted ? 'Remover da Wishlist' : 'Salvar para depois'}
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill={isWishlisted ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 22.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <p className="text-rufino-light-text text-sm italic mb-6">{product.guarantee}</p>
+
+                                {/* Opção de Criar Pacote (Inovação Opcional) */}
+                                <div className="bg-rufino-light-gold/30 p-4 rounded-lg text-center mt-6">
+                                    <h4 className="font-sora font-semibold text-rufino-dark-text mb-2">Crie seu Pacote de Transformação!</h4>
+                                    <p className="text-rufino-light-text text-sm mb-3">Compre 2 ou mais produtos da Buba e ganhe um desconto especial!</p>
+                                    <PrimaryButton onClick={() => alert("Funcionalidade de criação de pacote simulada.")} className="text-sm px-4 py-2">
+                                        Montar meu Pacote
+                                    </PrimaryButton>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Componente Checkout Simulado
+        const CheckoutPage = ({ product, onPurchaseComplete, onBack, creator }) => {
+            const [formData, setFormData] = React.useState({ name: '', email: '', country: '', messageToCreator: '' });
+            const [selectedGateway, setSelectedGateway] = React.useState('Stripe');
+            const [detectedCurrency, setDetectedCurrency] = React.useState('USD');
+
+            React.useEffect(() => {
+                // Simulação de detecção de país/moeda baseada no input do usuário
+                if (formData.country) {
+                    if (formData.country.toLowerCase().includes('brasil')) {
+                        setDetectedCurrency('BRL');
+                        setSelectedGateway('Mercado Pago');
+                    } else if (formData.country.toLowerCase().includes('eua') || formData.country.toLowerCase().includes('estados unidos')) {
+                        setDetectedCurrency('USD');
+                        setSelectedGateway('Stripe');
+                    } else if (formData.country.toLowerCase().includes('alemanha') || formData.country.toLowerCase().includes('frança') || formData.country.toLowerCase().includes('europa')) {
+                        setDetectedCurrency('EUR');
+                        setSelectedGateway('Mollie');
+                    } else {
+                        setDetectedCurrency('USD');
+                        setSelectedGateway('Stripe'); // Fallback
+                    }
+                } else {
+                    setDetectedCurrency('USD'); // Default
+                    setSelectedGateway('Stripe'); // Default
+                }
+            }, [formData.country]);
+
+
+            const handleChange = (e) => {
+                const { name, value } = e.target;
+                setFormData((prev) => ({ ...prev, [name]: value }));
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                console.log('Finalizando compra:', formData, product, selectedGateway, detectedCurrency);
+                onPurchaseComplete(product.name, creator.audioMessageAfterPurchase, creator.audioMessageText); // Passa dados da mensagem de áudio
+            };
+
+            const displayPrice = product.price[detectedCurrency] || product.price.USD; // Fallback para USD
+
+            return (
+                <div className="min-h-screen bg-rufino-bg-light p-6 md:p-10 font-nunito flex flex-col items-center justify-center">
+                    <div className="w-full max-w-md bg-rufino-white p-8 md:p-10 rounded-xl shadow-lg relative animate-fade-in">
+                        <button onClick={onBack} className="absolute top-4 left-4 text-rufino-dark-text hover:text-rufino-accent text-sm flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            Voltar
+                        </button>
+                        <h2 className="text-3xl font-sora font-bold text-rufino-dark-text mb-6 text-center">Finalizar Compra</h2>
+                        <div className="bg-rufino-light-gold/20 p-4 rounded-lg mb-6 text-center">
+                            <h3 className="text-xl font-sora font-semibold text-rufino-dark-text mb-2">{product.name}</h3>
+                            <p className="text-rufino-accent font-bold text-2xl">{detectedCurrency} {displayPrice.toFixed(2)}</p>
+                            <p className="text-sm text-rufino-light-text mt-2">Preço na moeda do seu país.</p>
+                        </div>
+
+                        <form onSubmit={handleSubmit}>
+                            <InputField label="Nome Completo" name="name" value={formData.name} onChange={handleChange} placeholder="Seu nome completo" />
+                            <InputField label="E-mail" type="email" name="email" value={formData.email} onChange={handleChange} placeholder="seu@email.com" />
+                            <InputField label="País (para moeda e gateway)" name="country" value={formData.country} onChange={handleChange} placeholder="Ex: Brasil" />
+
+                            <div className="mb-6">
+                                <label className="block text-rufino-light-text text-sm font-semibold mb-2">
+                                    Escolha seu Gateway de Pagamento
+                                </label>
+                                <div className="space-y-2">
+                                    <label className="flex items-center p-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                                        <input type="radio" name="gateway" value="Stripe" checked={selectedGateway === 'Stripe'} onChange={() => setSelectedGateway('Stripe')} className="form-radio h-4 w-4 text-rufino-accent" />
+                                        <span className="ml-2 text-rufino-dark-text">Stripe (Cartão)</span>
+                                    </label>
+                                    <label className="flex items-center p-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                                        <input type="radio" name="gateway" value="Mercado Pago" checked={selectedGateway === 'Mercado Pago'} onChange={() => setSelectedGateway('Mercado Pago')} className="form-radio h-4 w-4 text-rufino-accent" />
+                                        <span className="ml-2 text-rufino-dark-text">Mercado Pago (Pix, Boleto, Cartão)</span>
+                                    </label>
+                                    <label className="flex items-center p-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                                        <input type="radio" name="gateway" value="PayPal" checked={selectedGateway === 'PayPal'} onChange={() => setSelectedGateway('PayPal')} className="form-radio h-4 w-4 text-rufino-accent" />
+                                        <span className="ml-2 text-rufino-dark-text">PayPal</span>
+                                    </label>
+                                    <label className="flex items-center p-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                                        <input type="radio" name="gateway" value="Mollie" checked={selectedGateway === 'Mollie'} onChange={() => setSelectedGateway('Mollie')} className="form-radio h-4 w-4 text-rufino-accent" />
+                                        <span className="ml-2 text-rufino-dark-text">Mollie (Europa)</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            {/* Mensagem para a Criadora (Opcional) */}
+                            <InputField
+                                label="Deixe uma mensagem para a Buba (Opcional)"
+                                type="textarea"
+                                name="messageToCreator"
+                                value={formData.messageToCreator}
+                                onChange={handleChange}
+                                placeholder="Amei sua loja! Mal posso esperar pra começar!"
+                                rows={3}
+                            />
+
+                            <PrimaryButton type="submit" className="w-full">
+                                Finalizar Compra
+                            </PrimaryButton>
+                        </form>
+                    </div>
+                </div>
+            );
+        };
+
+        // Componente Tela de Sucesso da Compra
+        const ThankYouPage = ({ productName, onReturnToStore, creatorName, creatorAudioMessage, creatorAudioMessageText }) => (
+            <div className="min-h-screen bg-rufino-bg-light flex flex-col items-center justify-center p-6 md:p-10 font-nunito text-center">
+                <div className="bg-rufino-white p-8 md:p-10 rounded-xl shadow-lg w-full max-w-md animate-fade-in">
+                    <h2 className="text-4xl font-sora font-bold text-rufino-accent mb-4">Obrigada por confiar em você! 💫</h2>
+                    <p className="text-2xl text-rufino-dark-text mb-6 leading-relaxed">Sua compra de <span className="font-semibold">"{productName}"</span> foi realizada com sucesso!</p>
+                    <p className="text-rufino-light-text mb-8">Em breve você receberá tudo no seu e-mail. Prepare-se para uma nova jornada de crescimento!</p>
+
+                    {/* Mensagem em Áudio da Criadora (Inovação Opcional) */}
+                    {creatorAudioMessage && (
+                        <div className="bg-rufino-soft-pink/30 p-4 rounded-lg mb-8">
+                            <h3 className="font-sora font-semibold text-rufino-dark-text mb-3">Uma mensagem especial da {creatorName} para você!</h3>
+                            <audio controls className="w-full">
+                                <source src={creatorAudioMessage} type="audio/mpeg" />
+                                Seu navegador não suporta o elemento de áudio.
+                            </audio>
+                            <p className="text-xs text-rufino-light-text mt-2 italic">"{creatorAudioMessageText}"</p>
+                        </div>
+                    )}
+
+                    <PrimaryButton onClick={onReturnToStore}>
+                        Voltar para a Loja da Buba Rufino
+                    </PrimaryButton>
+                </div>
+            </div>
+        );
+
+        // Componente Principal da Aplicação B2C (Loja de Criadora)
+        const App = () => {
+            const [currentScreen, setCurrentScreen] = React.useState('creatorStorePage'); // creatorStorePage, productPage, checkout, thankYou
+            const [selectedProductId, setSelectedProductId] = React.useState(null);
+            const [wishlist, setWishlist] = React.useState([]); // Lista de IDs de produtos na wishlist
+            const [purchaseAudioMessage, setPurchaseAudioMessage] = React.useState(null);
+            const [purchaseAudioMessageText, setPurchaseAudioMessageText] = React.useState('');
+
+            const navigateTo = (screen) => setCurrentScreen(screen);
+
+            const handleProductClick = (productId) => {
+                setSelectedProductId(productId);
+                navigateTo('productPage');
+            };
+
+            const handleBuyClick = (product) => {
+                setSelectedProductId(product.id);
+                navigateTo('checkout');
+            };
+
+            const handlePurchaseComplete = (productName, audioUrl, audioText) => {
+                setPurchaseAudioMessage(audioUrl);
+                setPurchaseAudioMessageText(audioText);
+                setSelectedProductId(null); // Limpa o produto selecionado
+                navigateTo('thankYou');
+            };
+
+            const toggleWishlist = (productId) => {
+                setWishlist(prevWishlist => {
+                    if (prevWishlist.includes(productId)) {
+                        return prevWishlist.filter(id => id !== productId);
+                    } else {
+                        return [...prevWishlist, productId];
+                    }
+                });
+            };
+
+            const handleShareWishlist = () => {
+                // Simulação de compartilhamento da wishlist
+                // Em um ambiente real, geraria um link único seguro para a wishlist do usuário
+                const wishlistProducts = bubaProductsData.filter(p => wishlist.includes(p.id)).map(p => p.name).join(', ');
+                const shareMessage = `💖 Veja os produtos de transformação da Buba Rufino que eu quero investir na Rufino: ${wishlistProducts}. Que tal explorarmos juntas?`;
+                alert(`Simulação de Compartilhamento:\n\n${shareMessage}\n\n(Um link seguro seria gerado aqui para compartilhamento via WhatsApp/Email)`);
+            };
+
+            const currentProduct = bubaProductsData.find(p => p.id === selectedProductId);
+
+            return (
+                <div className="min-h-screen">
+                    {currentScreen === 'creatorStorePage' && (
+                        <CreatorStorePage
+                            creator={bubaRufino}
+                            products={bubaProductsData}
+                            onProductClick={handleProductClick}
+                            wishlist={wishlist}
+                            toggleWishlist={toggleWishlist}
+                            onShareWishlist={handleShareWishlist}
+                        />
+                    )}
+                    {currentScreen === 'productPage' && currentProduct && (
+                        <ProductPage
+                            product={currentProduct}
+                            creator={bubaRufino}
+                            onBuyClick={handleBuyClick}
+                            onBack={() => navigateTo('creatorStorePage')}
+                            wishlist={wishlist}
+                            toggleWishlist={toggleWishlist}
+                        />
+                    )}
+                    {currentScreen === 'checkout' && currentProduct && (
+                        <CheckoutPage
+                            product={currentProduct}
+                            onPurchaseComplete={handlePurchaseComplete}
+                            onBack={() => navigateTo('productPage')}
+                            creator={bubaRufino} // Passa a criadora para a mensagem de áudio
+                        />
+                    )}
+                    {currentScreen === 'thankYou' && (
+                        <ThankYouPage
+                            productName={selectedProductId ? bubaProductsData.find(p => p.id === selectedProductId)?.name : 'seu produto'}
+                            onReturnToStore={() => navigateTo('creatorStorePage')}
+                            creatorName={bubaRufino.name}
+                            creatorAudioMessage={purchaseAudioMessage}
+                            creatorAudioMessageText={purchaseAudioMessageText}
+                        />
+                    )}
+                </div>
+            );
+        };
+
+        // Renderiza o componente principal React no elemento com id 'root'
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
